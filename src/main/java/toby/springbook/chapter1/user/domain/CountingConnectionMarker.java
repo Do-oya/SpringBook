@@ -1,4 +1,4 @@
-package toby.springbook.user.domain;
+package toby.springbook.chapter1.user.domain;
 
 import java.sql.Connection;
 import java.sql.SQLException;

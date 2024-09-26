@@ -1,8 +1,8 @@
-package toby.springbook.user.domain;
+package toby.springbook.chapter1.user.domain;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import toby.springbook.user.dao.DaoFactory;
+import toby.springbook.chapter1.user.dao.DaoFactory;
 
 import java.sql.SQLException;
 

@@ -1,4 +1,4 @@
-package toby.springbook.user.domain;
+package toby.springbook.chapter1.user.domain;
 
 public class User {
     String id;
