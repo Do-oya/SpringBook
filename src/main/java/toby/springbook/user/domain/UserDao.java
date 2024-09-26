@@ -3,12 +3,13 @@ package toby.springbook.user.domain;
 import java.sql.*;
 
 public class UserDao {
-    private final ConnectionMaker connectionMaker;
-    private Connection c;
-    private User user;
+    private ConnectionMaker connectionMaker;
 
-    public UserDao(ConnectionMaker connectionMaker) {
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
+    }
+
+    public UserDao() {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
@@ -26,7 +27,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        this.c = connectionMaker.makeConnection();
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
@@ -34,15 +35,15 @@ public class UserDao {
         ResultSet rs = ps.executeQuery();
         rs.next();
 
-        this.user = new User();
-        this.user.setId(rs.getString("id"));
-        this.user.setName(rs.getString("name"));
-        this.user.setPassword(rs.getString("password"));
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
 
         rs.close();
         ps.close();
         c.close();
 
-        return this.user;
+        return user;
     }
 }

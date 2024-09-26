@@ -11,7 +11,7 @@ public class UserDaoConnectionCountingTest {
         UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
-        user.setId("111");
+        user.setId("adfa");
         user.setName("정현");
         user.setPassword("1234");
 
