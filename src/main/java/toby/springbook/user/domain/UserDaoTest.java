@@ -1,15 +1,15 @@
 package toby.springbook.user.domain;
 
+import toby.springbook.user.dao.DaoFactory;
+
 import java.sql.SQLException;
 
 public class UserDaoTest {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-
-        UserDao dao = new UserDao(connectionMaker);
+        UserDao dao = new DaoFactory().userDao();
 
         User user = new User();
-        user.setId("4321");
+        user.setId("qwerr");
         user.setName("정현");
         user.setPassword("1234");
 
