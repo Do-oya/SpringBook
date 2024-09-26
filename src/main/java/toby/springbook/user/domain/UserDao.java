@@ -1,4 +1,4 @@
-package toby.springbook.chapter1.user.domain;
+package toby.springbook.user.domain;
 
 import javax.sql.DataSource;
 import java.sql.*;

@@ -1,11 +1,12 @@
-package toby.springbook.chapter1.user.domain;
+package toby.springbook.user.domain;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SimpleConnectionMarker {
-    public Connection makeNewConnection() throws ClassNotFoundException, SQLException {
+public class DConnectionMaker implements ConnectionMaker {
+    @Override
+    public Connection makeConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/springbook", "root", "1441");
         return c;
