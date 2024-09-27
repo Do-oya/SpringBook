@@ -13,7 +13,6 @@ public class DaoFactory {
     public UserDao userDao() {
         UserDao userDao = new UserDao();
         userDao.setDataSource(dataSource());
-        userDao.setJdbcContext(jdbcContext());
         return userDao;
     }
 
@@ -27,12 +26,5 @@ public class DaoFactory {
         dataSource.setPassword("1441");
 
         return dataSource;
-    }
-
-    @Bean
-    public JdbcContext jdbcContext() {
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource());  // DataSource 주입
-        return jdbcContext;
     }
 }
