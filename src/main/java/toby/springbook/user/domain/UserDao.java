@@ -1,7 +1,6 @@
 package toby.springbook.user.domain;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import toby.springbook.user.dao.AddStatement;
 import toby.springbook.user.dao.DeleteAllStatement;
 import toby.springbook.user.dao.StatementStrategy;
 
@@ -19,8 +18,18 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        StatementStrategy st = new AddStatement(user);
-        jdbcContextWithStatementStrategy(st);
+        jdbcContextWithStatementStrategy(
+            new StatementStrategy() {
+                public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                    PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+                    ps.setString(1, user.getId());
+                    ps.setString(2, user.getName());
+                    ps.setString(3, user.getPassword());
+
+                    return ps;
+                }
+            }
+        );
     }
 
     public User get(String id) throws SQLException {
@@ -50,8 +59,13 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy st = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(st);
+        jdbcContextWithStatementStrategy(
+                new StatementStrategy() {
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        return c.prepareStatement("delete from users");
+                    }
+                }
+        );
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
