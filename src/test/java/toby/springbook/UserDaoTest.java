@@ -1,5 +1,6 @@
 package toby.springbook;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -14,11 +15,16 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserDaoTest {
+    private UserDao dao;
+
+    @BeforeEach
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        this.dao = context.getBean(UserDao.class);
+    }
+
     @Test
     public  void addAndGet() throws SQLException, ClassNotFoundException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-
-        UserDao dao = context.getBean("userDao", UserDao.class);
         User user1 = new User("dooya1", "두야1", "1234");
         User user2 = new User("dooya2", "두야2", "1234");
 
@@ -38,9 +44,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException{
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-
-        UserDao dao = context.getBean("userDao", UserDao.class);
         User user1 = new User("test1", "테스트1", "spring1");
         User user2 = new User("test2", "테스트2", "spring2");
         User user3 = new User("test3", "테스트3", "spring3");
@@ -60,13 +63,9 @@ public class UserDaoTest {
 
     @Test
     public void getUserFailure() throws SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
-        // 예외가 발생하는지 확인
         assertThrows(EmptyResultDataAccessException.class, () -> {
             dao.get("unknown_id");
         });
