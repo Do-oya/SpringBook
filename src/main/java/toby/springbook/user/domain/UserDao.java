@@ -1,6 +1,9 @@
 package toby.springbook.user.domain;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import toby.springbook.user.dao.AddStatement;
+import toby.springbook.user.dao.DeleteAllStatement;
+import toby.springbook.user.dao.StatementStrategy;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -16,17 +19,8 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values (?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+        StatementStrategy st = new AddStatement(user);
+        jdbcContextWithStatementStrategy(st);
     }
 
     public User get(String id) throws SQLException {
@@ -56,30 +50,28 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
+        StatementStrategy st = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(st);
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
         try {
             c = dataSource.getConnection();
-            ps = c.prepareStatement("delete from users");
+
+            ps = stmt.makePreparedStatement(c);
+
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
+            if (ps != null) { try { ps.close(); } catch (SQLException e) {}}
+            if (c != null) { try { c.close(); } catch (SQLException e) {}}
         }
     }
+
 
     public int getCount() throws SQLException {
         Connection c = null;
@@ -97,24 +89,9 @@ public class UserDao {
         } catch (SQLException e) {
             throw e;
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
+            if (rs != null) { try { rs.close(); } catch (SQLException e) {}}
+            if (ps != null) { try { ps.close(); } catch (SQLException e) {}}
+            if (c != null) { try { c.close(); } catch (SQLException e) {}}
         }
     }
 }
