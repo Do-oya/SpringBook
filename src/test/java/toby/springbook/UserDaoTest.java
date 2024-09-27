@@ -2,9 +2,12 @@ package toby.springbook;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import toby.springbook.user.dao.DaoFactory;
 import toby.springbook.user.domain.User;
 import toby.springbook.user.domain.UserDao;
@@ -14,20 +17,30 @@ import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoFactory.class)
 public class UserDaoTest {
+    @Autowired
+    private ApplicationContext context;
+
     private UserDao dao;
+    private User user1;
+    private User user2;
+    private User user3;
 
     @BeforeEach
     public void setUp() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        this.dao = context.getBean(UserDao.class);
+        System.out.println(this.context);
+        System.out.println(this);
+        this.dao = context.getBean("userDao", UserDao.class);
+
+        this.user1 = new User("test1", "테스트1", "spring1");
+        this.user2 = new User("test2", "테스트2", "spring2");
+        this.user3 = new User("test3", "테스트3", "spring3");
     }
 
     @Test
     public  void addAndGet() throws SQLException, ClassNotFoundException {
-        User user1 = new User("dooya1", "두야1", "1234");
-        User user2 = new User("dooya2", "두야2", "1234");
-
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -44,10 +57,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException{
-        User user1 = new User("test1", "테스트1", "spring1");
-        User user2 = new User("test2", "테스트2", "spring2");
-        User user3 = new User("test3", "테스트3", "spring3");
-
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
