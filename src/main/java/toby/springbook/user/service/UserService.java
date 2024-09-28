@@ -6,7 +6,7 @@ import toby.springbook.user.domain.UserDao;
 
 import java.util.List;
 
-public class UserService {
+public class UserService implements UserLevelUpgradePolicy{
     UserDao userDao;
 
     public void setUserDao(UserDao userDao) {
@@ -25,7 +25,7 @@ public class UserService {
     public static final int MIN_LOGCOUNT_FOR_SLIVER = 50;
     public static final int MIN_RECCOMEND_FOR_GOLD = 30;
 
-    private boolean canUpgradeLevel(User user) {
+    public boolean canUpgradeLevel(User user) {
         Level currentLevel = user.getLevel();
         switch (currentLevel) {
             case BASIC: return (user.getLogin() >= MIN_LOGCOUNT_FOR_SLIVER);
@@ -35,7 +35,7 @@ public class UserService {
         }
     }
 
-    private void upgradeLevel(User user) {
+    public void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }
