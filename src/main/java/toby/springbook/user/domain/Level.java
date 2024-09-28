@@ -3,16 +3,22 @@ package toby.springbook.user.domain;
 import ch.qos.logback.core.rolling.LengthCounter;
 
 public enum Level {
-    BASIC(1), SILVER(2), GOLD(3);
+    GOLD(3, null), SILVER(2, GOLD), BASIC(1, SILVER);
 
-    private final int level;
+    private final int value;
+    private final Level next;
 
-    Level(int level) {
-        this.level = level;
+    Level(int value, Level next) {
+        this.value = value;
+        this.next = next;
     }
 
     public int intValue() {
-        return level;
+        return value;
+    }
+
+    public Level nextLevel() {
+        return this.next;
     }
 
     public static Level valueOf(int level) {
