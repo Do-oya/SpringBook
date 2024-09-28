@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static toby.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SLIVER;
+import static toby.springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DaoFactory.class)
@@ -28,11 +30,11 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-                new User("test1", "test1", "test1", Level.BASIC, 49, 0),
-                new User("test2", "test2", "test2", Level.BASIC, 50, 0),
-                new User("test3", "test3", "test3", Level.SILVER, 60, 29),
-                new User("test4", "test4", "test4", Level.SILVER, 60, 30),
-                new User("test5", "test5", "test5", Level.GOLD, 100, 100)
+                new User("test1", "test1", "test1", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER-1, 0),
+                new User("test2", "test2", "test2", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER, 0),
+                new User("test3", "test3", "test3", Level.SILVER, MIN_RECCOMEND_FOR_GOLD-1, 29),
+                new User("test4", "test4", "test4", Level.SILVER, MIN_RECCOMEND_FOR_GOLD, 30),
+                new User("test5", "test5", "test5", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
