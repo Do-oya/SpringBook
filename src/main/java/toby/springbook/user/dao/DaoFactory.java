@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import toby.springbook.user.domain.UserDaoJdbc;
+import toby.springbook.user.service.UserService;
 
 import javax.sql.DataSource;
 
@@ -26,5 +27,12 @@ public class DaoFactory {
         dataSource.setPassword("1441");
 
         return dataSource;
+    }
+
+    @Bean
+    public UserService userService() {
+        UserService userService = new UserService();
+        userService.setUserDao(userDao());
+        return userService;
     }
 }
