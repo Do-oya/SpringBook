@@ -8,9 +8,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import toby.springbook.user.dao.DaoFactory;
+import toby.springbook.user.domain.Level;
 import toby.springbook.user.domain.User;
-import toby.springbook.user.domain.UserDao;
+import toby.springbook.user.domain.UserDaoJdbc;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DaoFactory.class)
 public class UserDaoTest {
-    @Autowired
-    private UserDao dao;
+    @Autowired UserDaoJdbc dao;
+    @Autowired DataSource dataSource;
 
     private User user1;
     private User user2;
@@ -33,13 +35,13 @@ public class UserDaoTest {
         System.out.println(this);
 
 
-        this.user1 = new User("test1", "테스트1", "spring1");
-        this.user2 = new User("test2", "테스트2", "spring2");
-        this.user3 = new User("test3", "테스트3", "spring3");
+        this.user1 = new User("test1", "테스트1", "spring1", Level.BASIC, 1, 0);
+        this.user2 = new User("test2", "테스트2", "spring2", Level.SILVER, 55, 10);
+        this.user3 = new User("test3", "테스트3", "spring3", Level.GOLD, 100, 40);
     }
 
     @Test
-    public  void addAndGet() throws SQLException, ClassNotFoundException {
+    public  void addAndGet() {
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -49,13 +51,14 @@ public class UserDaoTest {
         assertThat(dao.getCount()).isEqualTo(2);
 
         User userget2 = dao.get(user2.getId());
+        checkSameUser(userget2, user2);
 
         assertThat(userget2.getName()).isEqualTo(user2.getName());
         assertThat(userget2.getPassword()).isEqualTo(user2.getPassword());
     }
 
     @Test
-    public void count() throws SQLException{
+    public void count() {
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -70,7 +73,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void getUserFailure() throws SQLException {
+    public void getUserFailure() {
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -106,9 +109,29 @@ public class UserDaoTest {
 
     }
 
+    @Test
+    public void update() {
+        dao.deleteAll();
+
+        dao.add(user1);
+
+        user1.setName("두야");
+        user1.setPassword("123456");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        checkSameUser(user1, user1update);
+    }
+
     private void checkSameUser(User user1, User user2) {
         assertThat(user1.getId()).isEqualTo(user2.getId());
         assertThat(user1.getName()).isEqualTo(user2.getName());
         assertThat(user1.getPassword()).isEqualTo(user2.getPassword());
+        assertThat(user1.getLevel()).isEqualTo(user2.getLevel());
+        assertThat(user1.getLogin()).isEqualTo(user2.getLogin());
+        assertThat(user1.getRecommend()).isEqualTo(user2.getRecommend());
     }
 }

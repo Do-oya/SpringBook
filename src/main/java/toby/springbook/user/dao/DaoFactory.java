@@ -3,15 +3,15 @@ package toby.springbook.user.dao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import toby.springbook.user.domain.UserDao;
+import toby.springbook.user.domain.UserDaoJdbc;
 
 import javax.sql.DataSource;
 
 @Configuration
 public class DaoFactory {
     @Bean
-    public UserDao userDao() {
-        UserDao userDao = new UserDao();
+    public UserDaoJdbc userDao() {
+        UserDaoJdbc userDao = new UserDaoJdbc();
         userDao.setDataSource(dataSource());
         return userDao;
     }
